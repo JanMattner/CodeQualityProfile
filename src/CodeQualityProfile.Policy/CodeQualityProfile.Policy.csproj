@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Authors>AIT</Authors>
+    <Company>AIT</Company>
+    <Product />
+    <Description>Provides a collection of Roslyn analyzers and rules</Description>
+    <PackageId>$(ProfilePackageId)</PackageId>
+    <Version>$(ProfilePackageVersion)</Version>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="CodeQualityProfile.DotSettings" />
+    <Content Include="CodeQualityProfile.ruleset" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="1.23.0.1857" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.0.0" />
+  </ItemGroup>
+
+  <Target Name="PackProfile" DependsOnTargets="SetProperties">
+    <Error Text="The ProfilePackageId property needs to be set." Condition="'$(ProfilePackageId)' == ''" />
+    <Error Text="The ProfilePackageVersion property needs to be set." Condition="'$(ProfilePackageVersion)' == ''" />
+    <CallTarget Targets="Pack" />
+  </Target>
+
+  <Target Name="SetProperties">
+    <PropertyGroup>
+      <PackageOutputPath>..\..\build\package</PackageOutputPath>
+    </PropertyGroup>
+  </Target>
+</Project>
