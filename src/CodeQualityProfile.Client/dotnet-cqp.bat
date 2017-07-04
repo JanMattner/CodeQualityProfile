@@ -1,1 +1,1 @@
-dotnet %~dp0\CodeQualityProfile.Client.dll %*
+dotnet "%~dp0CodeQualityProfile.Client.dll" %*
