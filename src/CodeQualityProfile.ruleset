@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="United Grinding Coding Guidelines" ToolsVersion="14.0">
+<RuleSet Name="United Grinding Coding Guidelines" ToolsVersion="15.0">
   <Include Path="allrules.ruleset" Action="Default" />
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1006" Action="Info" />
@@ -30,6 +30,7 @@
     <Rule Id="S1116" Action="Info" />
     <Rule Id="S1125" Action="Info" />
     <Rule Id="S1185" Action="Info" />
+    <Rule Id="S1450" Action="None" />
     <Rule Id="S1905" Action="Info" />
     <Rule Id="S1939" Action="Info" />
     <Rule Id="S3234" Action="Info" />
@@ -41,7 +42,9 @@
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SA1004" Action="None" />
+    <Rule Id="SA1011" Action="Warning" />
     <Rule Id="SA1101" Action="None" />
+    <Rule Id="SA1122" Action="Hidden" />
     <Rule Id="SA1124" Action="None" />
     <Rule Id="SA1133" Action="None" />
     <Rule Id="SA1200" Action="None" />
