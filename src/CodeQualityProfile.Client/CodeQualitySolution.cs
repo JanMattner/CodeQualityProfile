@@ -57,17 +57,7 @@ namespace CodeQualityProfile.Client
 
         private bool HasSolutionFile => !string.IsNullOrWhiteSpace(_solutionFileName);
 
-        public void AddOrUpdatePackage(string codeQualityProfilePackageName)
-        {
-            AddOrUpdatePackage(codeQualityProfilePackageName, null);
-        }
-
-        public void AddOrUpdatePackage(string codeQualityProfilePackageName, string version)
-        {
-            AddOrUpdatePackage(codeQualityProfilePackageName, version, null);
-        }
-
-        public void AddOrUpdatePackage(string codeQualityProfilePackageName, string version, IReadOnlyCollection<string> exclusionPatterns)
+        public void AddOrUpdatePackage(string codeQualityProfilePackageName, string version = null, IReadOnlyCollection<string> exclusionPatterns = null)
         {
             if (exclusionPatterns == null)
             {
