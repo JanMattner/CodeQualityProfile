@@ -57,6 +57,32 @@ Without a specific version, the latest stable package will be installed. Pre-rel
 
 The client tool usually needs to be installed only once on a developer machine - new package versions can be installed and updated with that same client tool!
 
+## Add VSTS nuget feed
+
+NuGet Documentation for dotnet: [Link](https://www.visualstudio.com/en-us/docs/package/nuget/dotnet-exe)
+
+You can either add the VSTS NuGet feed and crendentials with the nuget command or you can edit the global nuget config.
+
+NuGet command:
+```
+nuget.exe sources add -name {feed name} -source {feed URL} -username {user@domain.com} -password {VSTS_PERSONAL_ACCESS_TOKEN} -StorePasswordInClearText
+```
+NuGet Config:
+```
+<configuration>
+  <packageSources>
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
+    <add key="{feed name}" value="{feed url}" />
+  </packageSources>
+  <packageSourceCredentials>
+    <TestFeed>
+      <add key="Username" value="user@domain.com" />
+      <add key="ClearTextPassword" value="VSTS_PERSONAL_ACCESS_TOKEN" />
+    </TestFeed>
+  </packageSourceCredentials>
+</configuration>
+```
+
 ## Custom Code Quality Profile
 
 You can easily customize the used Roslyn Analyzers, the `ruleset` and `DotSettings` file. The package name and default package to be installed with the client tool can be configured as well.
@@ -97,7 +123,7 @@ Open the file `PACKAGE_VERSION` and adjust the version number as desired.
 
 Run the following command with your `PACKAGE_ID`:
 
-- Windows: `.\pack.cmd PACKAGE_ID`
+- Windows: `.\pack.bat PACKAGE_ID`
 - Linux: `.\pack.sh PACKAGE_ID`
     - you might need to first change the execution permission for the script file, e.g. `chmod a+x pack.sh`
 
