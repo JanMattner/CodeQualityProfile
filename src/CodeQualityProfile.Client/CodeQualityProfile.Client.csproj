@@ -6,6 +6,7 @@
     <OutputTypeEx>exe</OutputTypeEx>
     <StartupObject />
     <PreBuildEvent></PreBuildEvent>
+    <CodeAnalysisRuleSet>..\CodeQualityProfile.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;cqp</DefineConstants>
