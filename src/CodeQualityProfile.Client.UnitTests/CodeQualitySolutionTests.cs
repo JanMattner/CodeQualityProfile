@@ -93,7 +93,6 @@ namespace CodeQualityProfile.Client.UnitTests
             var project1Mock = new Mock<IProject>();
             var project2Mock = new Mock<IProject>();
 
-
             projectFactoryMock.Setup(m => m.CreateProject(It.IsRegex(".*project1.csproj$"))).Returns(project1Mock.Object);
             projectFactoryMock.Setup(m => m.CreateProject(It.IsRegex(".*project2.Test.csproj$"))).Returns(project2Mock.Object);
 
