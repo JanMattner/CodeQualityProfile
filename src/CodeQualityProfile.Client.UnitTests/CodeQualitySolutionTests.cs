@@ -2,12 +2,24 @@
 using CodeQualityProfile.Client.FileSystem;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 
 namespace CodeQualityProfile.Client.UnitTests
 {
     [TestClass]
     public class CodeQualitySolutionTests
     {
+        [TestMethod, ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void CodeQualitySolution_ConstructorWithRelativePath_ShouldThrowException()
+        {
+            var directoryHelperMock = new Mock<IDirectoryHelper>();
+            var nuGetPathHelperMock = new Mock<INuGetPathHelper>();
+            var fileHelperMock = new Mock<IFileHelper>();
+            var projectFactoryMock = new Mock<IProjectFactory>();
+
+            var codeQualitySolution = new CodeQualitySolution(".\\relative\\path", directoryHelperMock.Object, nuGetPathHelperMock.Object, fileHelperMock.Object, projectFactoryMock.Object);
+        }
+
         [TestMethod]
         public void CodeQualitySolution_AddOrUpdatePackage_ShouldApplyForAllProjects()
         {
@@ -52,6 +64,67 @@ namespace CodeQualityProfile.Client.UnitTests
             project2Mock.Verify(m => m.AddOrUpdatePackage(It.IsAny<string>(), It.IsAny<string>()));
             project2Mock.Verify(m => m.AddOrUpdateRuleSetReference(It.IsAny<string>()));
             project2Mock.Verify(m => m.MakePackageReferencePrivate(It.IsAny<string>()));
+        }
+
+        [TestMethod, ExpectedException(typeof(InvalidOperationException))]
+        public void CodeQualitySolution_AddOrUpdateWithInvalidProjects_ShoudThrowException()
+        {
+            var directoryHelperMock = new Mock<IDirectoryHelper>();
+            var nuGetPathHelperMock = new Mock<INuGetPathHelper>();
+            var fileHelperMock = new Mock<IFileHelper>();
+            var projectFactoryMock = new Mock<IProjectFactory>();
+
+            directoryHelperMock.Setup(m => m.GetFiles(It.IsAny<string>(), It.IsRegex("csproj"), It.IsAny<SearchOption>(), It.IsAny<string>()))
+                .Returns(new string[] {});
+
+            var codeQualitySolution = new CodeQualitySolution("C:\\foo", directoryHelperMock.Object, nuGetPathHelperMock.Object, fileHelperMock.Object, projectFactoryMock.Object);
+
+            codeQualitySolution.AddOrUpdatePackage("mypackage");
+        }
+
+        [TestMethod]
+        public void CodeQualitySolution_AddOrUpdatePackageWithExclusionPatterns_ShouldApplyForMatchingProjects()
+        {
+            var directoryHelperMock = new Mock<IDirectoryHelper>();
+            var nuGetPathHelperMock = new Mock<INuGetPathHelper>();
+            var fileHelperMock = new Mock<IFileHelper>();
+            var projectFactoryMock = new Mock<IProjectFactory>();
+
+            var project1Mock = new Mock<IProject>();
+            var project2Mock = new Mock<IProject>();
+
+
+            projectFactoryMock.Setup(m => m.CreateProject(It.IsRegex(".*project1.csproj$"))).Returns(project1Mock.Object);
+            projectFactoryMock.Setup(m => m.CreateProject(It.IsRegex(".*project2.Test.csproj$"))).Returns(project2Mock.Object);
+
+            project1Mock.SetupGet(m => m.FilePath).Returns("C:\\foo\\project1\\project1.csproj");
+            project2Mock.SetupGet(m => m.FilePath).Returns("C:\\foo\\project2\\project2.UnitTests.csproj");
+
+            project1Mock.Setup(m => m.AddOrUpdatePackage(It.IsAny<string>(), It.IsAny<string>())).Returns("PackageReference for package 'mypackage' version '0.1.2' added in file");
+            project2Mock.Setup(m => m.AddOrUpdatePackage(It.IsAny<string>(), It.IsAny<string>())).Throws(new Exception("Excluded project setup should not be called!"));
+
+
+            directoryHelperMock.Setup(m => m.GetFiles(It.IsAny<string>(), It.IsRegex("csproj"), It.IsAny<SearchOption>(), It.IsAny<string>()))
+                .Returns(new string[] { "C:\\foo\\project1\\project1.csproj", "C:\\foo\\project2\\project2.Test.csproj"});
+
+            directoryHelperMock.Setup(m => m.GetFiles(It.IsAny<string>(), It.IsRegex("sln"), It.IsAny<SearchOption>(), It.IsAny<string>()))
+                .Returns(new string[] { "C:\\foo\\solution.sln" });
+
+            directoryHelperMock.Setup(m => m.GetFiles(It.IsAny<string>(), It.IsRegex("ruleset"), It.IsAny<SearchOption>(), It.IsAny<string>()))
+                .Returns(new string[] { "C:\\nuget\\myruleset.ruleset" });
+
+            directoryHelperMock.Setup(m => m.GetFiles(It.IsAny<string>(), It.IsRegex("DotSettings"), It.IsAny<SearchOption>(), It.IsAny<string>()))
+                .Returns(new string[] { "C:\\nuget\\mysettings.DotSettings" });
+
+            nuGetPathHelperMock.Setup(m => m.GetPackageContentPath(It.IsAny<string>(), It.IsAny<string>())).Returns("C:\\nuget");
+
+            var codeQualitySolution = new CodeQualitySolution("C:\\foo", directoryHelperMock.Object, nuGetPathHelperMock.Object, fileHelperMock.Object, projectFactoryMock.Object);
+
+            codeQualitySolution.AddOrUpdatePackage("mypackage", null, new string[] { "**/*.*Tests.csproj" });
+
+            project1Mock.Verify(m => m.AddOrUpdatePackage(It.IsAny<string>(), It.IsAny<string>()));
+            project1Mock.Verify(m => m.AddOrUpdateRuleSetReference(It.IsAny<string>()));
+            project1Mock.Verify(m => m.MakePackageReferencePrivate(It.IsAny<string>()));
         }
 
         [DataTestMethod]
