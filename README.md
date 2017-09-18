@@ -8,7 +8,7 @@ The Code Quality Profile makes it easy to distribute and apply rules for the sta
 
 You need to install Visual Studio 2017 or at least dotnet 1.0.1 in order to properly create or consume the Code Quality Profile package and client tool.
 
-The `dotnet` command must be available from the command line (in the global PATH).
+The `dotnet` command must be available from the command line (in the global PATH). If you need futher infomation for using the dotnet core CLI you can get them visiting the GitHub dotnet CLI [page](https://github.com/dotnet/cli).
 
 ### Install the Client Tool
 
@@ -68,7 +68,7 @@ NuGet command:
 nuget.exe sources add -name {feed name} -source {feed URL} -username {user@domain.com} -password {VSTS_PERSONAL_ACCESS_TOKEN} -StorePasswordInClearText
 ```
 NuGet Config:
-```
+```xml
 <configuration>
   <packageSources>
     <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
