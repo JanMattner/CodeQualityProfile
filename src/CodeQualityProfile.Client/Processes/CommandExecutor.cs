@@ -26,24 +26,22 @@ namespace CodeQualityProfile.Client.Processes
             {
                 throw new ArgumentNullException(nameof(program));
             }
+            using (var process = new Process())
+            {
+                _logger.LogTrace($"Execute: {program} {arguments}");
 
-            _logger.LogTrace($"Execute: {program} {arguments}");
+                var output = string.Empty;
 
-            var output = string.Empty;
+                process.StartInfo = new ProcessStartInfo {
+                    FileName = program,
+                    Arguments = arguments,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    WorkingDirectory = workingDirectory ?? _workingDirectory
+                };
 
-            var process = new Process
-                              {
-                                  StartInfo =
-                                      {
-                                          FileName = program,
-                                          Arguments = arguments,
-                                          CreateNoWindow = true,
-                                          RedirectStandardError = true,
-                                          RedirectStandardOutput = true,
-                                          WorkingDirectory = workingDirectory ?? _workingDirectory
-                                      }
-                              };
-            process.OutputDataReceived += (sender, eventArgs) =>
+                process.OutputDataReceived += (sender, eventArgs) =>
                 {
                     if (eventArgs.Data != null)
                     {
@@ -51,19 +49,20 @@ namespace CodeQualityProfile.Client.Processes
                         output += "\n" + eventArgs.Data;
                     }
                 };
-            process.ErrorDataReceived += (sender, eventArgs) =>
+                process.ErrorDataReceived += (sender, eventArgs) =>
                 {
                     if (eventArgs.Data != null)
                     {
                         _logger.LogError(eventArgs.Data);
                     }
                 };
-            process.Start();
-            process.BeginErrorReadLine();
-            process.BeginOutputReadLine();
-            process.WaitForExit();
+                process.Start();
+                process.BeginErrorReadLine();
+                process.BeginOutputReadLine();
+                process.WaitForExit();
 
-            return new CommandResult { ExitCode = process.ExitCode, StdOut = output };
+                return new CommandResult { ExitCode = process.ExitCode, StdOut = output };
+            }
         }
     }
 }
