@@ -27,6 +27,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AIT.CodeQualityProfile" Version="0.1.4-dev6788">
+      <PrivateAssets>All</PrivateAssets>
+      <ExcludeAssets>contentFiles</ExcludeAssets>
+    </PackageReference>
     <PackageReference Version="1.1.0" Include="Microsoft.Extensions.CommandLineUtils" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.2" />
