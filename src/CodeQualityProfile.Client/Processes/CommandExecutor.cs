@@ -26,13 +26,15 @@ namespace CodeQualityProfile.Client.Processes
             {
                 throw new ArgumentNullException(nameof(program));
             }
+
             using (var process = new Process())
             {
                 _logger.LogTrace($"Execute: {program} {arguments}");
 
                 var output = string.Empty;
 
-                process.StartInfo = new ProcessStartInfo {
+                process.StartInfo = new ProcessStartInfo
+                {
                     FileName = program,
                     Arguments = arguments,
                     CreateNoWindow = true,

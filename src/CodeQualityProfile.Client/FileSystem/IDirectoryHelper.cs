@@ -2,7 +2,6 @@
 
 namespace CodeQualityProfile.Client.FileSystem
 {
-
     public interface IDirectoryHelper
     {
         /// <summary>
