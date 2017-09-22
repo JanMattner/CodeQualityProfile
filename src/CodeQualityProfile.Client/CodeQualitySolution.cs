@@ -106,6 +106,7 @@ namespace CodeQualityProfile.Client
 
             var ruleSetFileName = Path.GetFileName(ruleSetFilePath);
             var localRuleSetFilePath = Path.Combine(_basePath, ruleSetFileName);
+            _logger.LogInformation($"Moving file {ruleSetFilePath} to {localRuleSetFilePath} ...");
             _fileHelper.Copy(ruleSetFilePath, localRuleSetFilePath, true);
 
             if (HasSolutionFile)
@@ -116,7 +117,9 @@ namespace CodeQualityProfile.Client
                     throw new InvalidOperationException($"Could not locate a *.DotSettings file in the package folder '{nuGetPackagePath}'.");
                 }
 
-                _fileHelper.Copy(dotsettingsFilePath, Path.Combine(_basePath, $"{_solutionFileName}.DotSettings"), true);
+                var localDotDettingsFilePath = Path.Combine(_basePath, $"{_solutionFileName}.DotSettings");
+                _logger.LogInformation($"Moving file {dotsettingsFilePath} to {localDotDettingsFilePath} ...");
+                _fileHelper.Copy(dotsettingsFilePath, localDotDettingsFilePath, true);
             }
 
             return localRuleSetFilePath;
